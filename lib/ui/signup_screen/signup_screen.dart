@@ -92,8 +92,8 @@ class SignupScreen extends StatelessWidget {
               name: nameController.text,
               email: emailController.text);
           await createUserInFirestore(newUser);
+          UserDM.currentUser = newUser;
           hideLoading(context);
-          showMessage(context, "User Created successfully");
         } on FirebaseAuthException catch (e) {
           hideLoading(context);
           String message = "Something went wrong please try again later";

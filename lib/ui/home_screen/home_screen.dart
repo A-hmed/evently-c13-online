@@ -1,5 +1,6 @@
 import 'package:evently_c13_online/core/assets/app_assets.dart';
 import 'package:evently_c13_online/core/theme/app_colors.dart';
+import 'package:evently_c13_online/ui/add_event/add_event.dart';
 import 'package:evently_c13_online/ui/home_screen/tabs/home_tab/home_tab.dart';
 import 'package:evently_c13_online/ui/home_screen/tabs/love_tab/love_tab.dart';
 import 'package:evently_c13_online/ui/home_screen/tabs/map_tab/map_tab.dart';
@@ -27,14 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: AppColors.purple,
-        shape:const CircleBorder(side: BorderSide(width: 5, color: AppColors.white)),
-        child: const Icon(Icons.add, color: AppColors.white,size: 30,),
-
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: buildFab(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: Colors.white,
       bottomNavigationBar: BottomNavigationBar(
 
@@ -68,6 +63,22 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: tabs[currentIndex]
+    );
+  }
+
+  FloatingActionButton buildFab() {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.pushNamed(context, AddEvent.routeName);
+      },
+      backgroundColor: AppColors.purple,
+      shape: const CircleBorder(
+          side: BorderSide(width: 5, color: AppColors.white)),
+      child: const Icon(
+        Icons.add,
+        color: AppColors.white,
+        size: 30,
+      ),
     );
   }
 }

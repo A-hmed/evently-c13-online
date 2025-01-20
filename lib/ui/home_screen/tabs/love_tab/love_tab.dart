@@ -1,5 +1,4 @@
 import 'package:evently_c13_online/core/theme/app_colors.dart';
-import 'package:evently_c13_online/ui/home_screen/tabs/home_tab/widget/event_task.dart';
 import 'package:flutter/material.dart';
 
 class LoveTab extends StatelessWidget {
@@ -29,14 +28,12 @@ class LoveTab extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(itemBuilder: (context, index) {
-              return EventTask();
-
-            },itemCount: 20,),
-          )
-
-
+          // Expanded(
+          //   child: ListView.builder(itemBuilder: (context, index) {
+          //     return EventWidget();
+          //
+          //   },itemCount: 20,),
+          // )
         ],
       ),
     );

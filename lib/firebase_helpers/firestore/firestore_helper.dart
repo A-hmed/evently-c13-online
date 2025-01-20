@@ -1,16 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:evently_c13_online/model/category_dm.dart';
 import 'package:evently_c13_online/model/event_dm.dart';
 import 'package:evently_c13_online/model/user_dm.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 ///Event Features
 Future<List<EventDM>> getEventsByCategory(String category) async {
-  var eventsCollection = FirebaseFirestore.instance.collection("events");
-  QuerySnapshot collectionSnapshot =
-      await eventsCollection.where("category", isEqualTo: category).get();
-  List<QueryDocumentSnapshot> documents = collectionSnapshot.docs;
-  List<EventDM> events = documents.map(documentSnapshotToEventDM).toList();
-  return events;
+  if (category == CategoryDM.allCategory.name) {
+    var eventsCollection = FirebaseFirestore.instance.collection("events");
+    QuerySnapshot collectionSnapshot = await eventsCollection
+        //.where("category", isEqualTo: category).
+        .get();
+    List<QueryDocumentSnapshot> documents = collectionSnapshot.docs;
+    List<EventDM> events = documents.map(documentSnapshotToEventDM).toList();
+    return events;
+  } else {
+    var eventsCollection = FirebaseFirestore.instance.collection("events");
+    QuerySnapshot collectionSnapshot =
+        await eventsCollection.where("category", isEqualTo: category).get();
+    List<QueryDocumentSnapshot> documents = collectionSnapshot.docs;
+    List<EventDM> events = documents.map(documentSnapshotToEventDM).toList();
+    return events;
+  }
 }
 
 EventDM documentSnapshotToEventDM(QueryDocumentSnapshot doc) {

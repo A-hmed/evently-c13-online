@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class EventDM {
   late String name;
   late DateTime date;
-  late DateTime time;
   late String ownerId;
   late int? lat;
   late int? lng;
@@ -11,7 +12,6 @@ class EventDM {
   EventDM(
       {required this.name,
       required this.date,
-      required this.time,
       required this.ownerId,
       this.lat,
       this.lng,
@@ -20,8 +20,8 @@ class EventDM {
 
   EventDM.fromJson(Map json) {
     name = json["name"];
-    date = json["date"];
-    time = json["time"];
+    Timestamp timestamp = json["date"];
+    date = timestamp.toDate();
     ownerId = json["ownerId"];
     lat = json["lat"];
     lng = json["lng"];
@@ -33,7 +33,6 @@ class EventDM {
     Map<String, dynamic> json = {};
     json["name"] = name;
     json["date"] = date;
-    json["time"] = time;
     json["ownerId"] = ownerId;
     json["lat"] = lat;
     json["lng"] = lng;

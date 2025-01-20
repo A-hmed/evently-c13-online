@@ -1,6 +1,7 @@
 
 
 class UserDM {
+  static late UserDM currentUser;
   late String id;
   late String name;
   late String email;
