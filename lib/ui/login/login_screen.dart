@@ -1,10 +1,11 @@
 import 'package:evently_c13_online/core/assets/app_assets.dart';
+import 'package:evently_c13_online/core/providers/user_provider.dart';
 import 'package:evently_c13_online/firebase_helpers/firestore/firestore_helper.dart';
-import 'package:evently_c13_online/model/user_dm.dart';
 import 'package:evently_c13_online/ui/home_screen/home_screen.dart';
 import 'package:evently_c13_online/ui/shared_widgets/custom_button.dart';
 import 'package:evently_c13_online/ui/shared_widgets/language_switch.dart';
 import 'package:evently_c13_online/ui/signup_screen/signup_screen.dart';
+import 'package:evently_c13_online/ui/utils/context_extensions.dart';
 import 'package:evently_c13_online/ui/utils/dialog_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +22,11 @@ class LoginScreen extends StatelessWidget {
   var passwordController = TextEditingController();
   var emailController = TextEditingController();
   var formKey = GlobalKey<FormState>();
-
+  late UserProvider userProvider;
   @override
   Widget build(BuildContext context) {
     appLocalizations = AppLocalizations.of(context)!;
+    userProvider = context.userProvider;
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -125,8 +127,8 @@ class LoginScreen extends StatelessWidget {
               email: emailController.text,
               password: passwordController.text,
             );
-            UserDM.currentUser =
-                await getUserFromFirestore(credential.user!.uid);
+            userProvider.updateCurrentUser(
+                await getUserFromFirestore(credential.user!.uid));
             hideLoading(context);
             Navigator.pushNamed(context, HomeScreen.routeName);
           } on FirebaseAuthException catch (e) {

@@ -3,23 +3,21 @@ import 'package:evently_c13_online/model/category_dm.dart';
 import 'package:flutter/material.dart';
 
 class CategoriesTabs extends StatelessWidget {
-  final bool showAllTab;
   final Function(CategoryDM) onCategoryClick;
+  final List<CategoryDM> categories;
 
   const CategoriesTabs(
-      {super.key, this.showAllTab = true, required this.onCategoryClick});
+      {super.key, required this.onCategoryClick, required this.categories});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.purple,
+      color: AppColors.blue,
       child: DefaultTabController(
-        length: showAllTab ? 4 : 3,
+        length: categories.length,
         child: TabBar(
             onTap: (index) {
-              onCategoryClick(showAllTab
-                  ? CategoryDM.categoriesWithAllCategory[index]
-                  : CategoryDM.categoriesWithoutAllCategory[index]);
+              onCategoryClick(categories[index]);
             },
             indicator: BoxDecoration(
               borderRadius: BorderRadius.circular(50),
@@ -31,35 +29,13 @@ class CategoriesTabs extends StatelessWidget {
             // unselectedLabelColor: AppColors.white,
             // labelColor: AppColors.purple,
             unselectedLabelStyle: TextStyle(color: AppColors.white),
-            labelStyle: TextStyle(color: AppColors.purple),
-            tabs: [
-              if (showAllTab)
-                buildTabView(
-                    "All",
-                    Icon(
-                      Icons.compass_calibration_outlined,
-                    )),
-              buildTabView(
-                  "Book Club",
-                  Icon(
-                    Icons.mark_chat_unread,
-                  )),
-              buildTabView(
-                  "Sport",
-                  Icon(
-                    Icons.directions_bike_sharp,
-                  )),
-              buildTabView(
-                  "Birthday",
-                  Icon(
-                    Icons.cake_outlined,
-                  )),
-            ]),
+            labelStyle: TextStyle(color: AppColors.blue),
+            tabs: categories.map(categoryToTab).toList()),
       ),
     );
   }
 
-  Tab buildTabView(String title, Widget icon) {
+  Tab categoryToTab(CategoryDM category) {
     return Tab(
       child: Container(
         padding: EdgeInsets.all(12),
@@ -67,11 +43,11 @@ class CategoriesTabs extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            icon,
-            SizedBox(
+            Icon(category.icon),
+            const SizedBox(
               width: 8,
             ),
-            Text(title),
+            Text(category.name),
           ],
         ),
       ),

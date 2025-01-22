@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EventDM {
+  late String id;
   late String name;
   late DateTime date;
   late String ownerId;
@@ -18,7 +19,7 @@ class EventDM {
       required this.category,
       required this.description});
 
-  EventDM.fromJson(Map json) {
+  EventDM.fromJson(Map json, {this.id = ""}) {
     name = json["name"];
     Timestamp timestamp = json["date"];
     date = timestamp.toDate();

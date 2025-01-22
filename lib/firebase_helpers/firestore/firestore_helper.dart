@@ -4,41 +4,74 @@ import 'package:evently_c13_online/model/event_dm.dart';
 import 'package:evently_c13_online/model/user_dm.dart';
 
 ///Event Features
-Future<List<EventDM>> getEventsByCategory(String category) async {
+
+Stream<List<EventDM>> getEventsByCategory(String category) {
   if (category == CategoryDM.allCategory.name) {
     var eventsCollection = FirebaseFirestore.instance.collection("events");
-    QuerySnapshot collectionSnapshot = await eventsCollection
+    Stream<QuerySnapshot> collectionSnapshot = eventsCollection
         //.where("category", isEqualTo: category).
-        .get();
-    List<QueryDocumentSnapshot> documents = collectionSnapshot.docs;
-    List<EventDM> events = documents.map(documentSnapshotToEventDM).toList();
-    return events;
+        .snapshots();
+    Stream<List<EventDM>> eventsStream =
+        collectionSnapshot.map((querySnapshot) {
+      List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+      List<EventDM> events = documents.map(documentSnapshotToEventDM).toList();
+      return events;
+    });
+    return eventsStream;
   } else {
     var eventsCollection = FirebaseFirestore.instance.collection("events");
-    QuerySnapshot collectionSnapshot =
-        await eventsCollection.where("category", isEqualTo: category).get();
-    List<QueryDocumentSnapshot> documents = collectionSnapshot.docs;
-    List<EventDM> events = documents.map(documentSnapshotToEventDM).toList();
-    return events;
+    Stream<QuerySnapshot> collectionSnapshot =
+        eventsCollection.where("category", isEqualTo: category).snapshots();
+    Stream<List<EventDM>> eventsStream =
+        collectionSnapshot.map((querySnapshot) {
+      List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+      List<EventDM> events = documents.map(documentSnapshotToEventDM).toList();
+      return events;
+    });
+
+    return eventsStream;
   }
 }
 
 EventDM documentSnapshotToEventDM(QueryDocumentSnapshot doc) {
   Map<String, dynamic> json = doc.data() as Map<String, dynamic>;
-  return EventDM.fromJson(json);
+  return EventDM.fromJson(json, id: doc.id);
 }
 
 Future<void> addEvent(EventDM event) {
   var eventsCollection = FirebaseFirestore.instance.collection("events");
   return eventsCollection.add(event.toJson());
 }
+
+Future<List<EventDM>> getFavoriteEvents(UserDM currentUser) async {
+  List<String> userFavoritesEvents = currentUser.favoritesEventsIds ?? [];
+  if (userFavoritesEvents.isEmpty) return [];
+  QuerySnapshot snapshot = await FirebaseFirestore.instance
+      .collection("events")
+      .where(FieldPath.documentId, whereIn: userFavoritesEvents)
+      .get();
+  return snapshot.docs.map(documentSnapshotToEventDM).toList();
+}
+
 //
 ///Assignment // Future<void> updateEvent(EventDM newEvent){}
 //
 // ///User Features
-// Future<void> addEventToFavorites(String eventId){}
-//
-// Future<void> removeEventFromFavorites(String eventId){}
+Future<void> addEventToFavorites(String eventId, String userId) async {
+  var usersCollection = FirebaseFirestore.instance.collection("users");
+  var userDoc = usersCollection.doc(userId);
+  userDoc.update({
+    "favoritesEventsIds": FieldValue.arrayUnion([eventId])
+  });
+}
+
+Future<void> removeEventFromFavorites(String eventId, String userId) async {
+  var usersCollection = FirebaseFirestore.instance.collection("users");
+  var userDoc = usersCollection.doc(userId);
+  userDoc.update({
+    "favoritesEventsIds": FieldValue.arrayRemove([eventId])
+  });
+}
 
 Future<void> createUserInFirestore(UserDM userDm) {
   // UserDM(id: "1", name: "ahmed", email: "ahmed@gmail.com", favoritesEventsIds: ["1"])???

@@ -1,5 +1,6 @@
 import 'package:evently_c13_online/core/providers/locale_provider.dart';
 import 'package:evently_c13_online/core/providers/theme_provider.dart';
+import 'package:evently_c13_online/core/providers/user_provider.dart';
 import 'package:evently_c13_online/core/theme/app_theme.dart';
 import 'package:evently_c13_online/ui/add_event/add_event.dart';
 import 'package:evently_c13_online/ui/home_screen/home_screen.dart';
@@ -29,6 +30,9 @@ void main() async {
       ChangeNotifierProvider(
         create: (context) => LocaleProvider(),
       ),
+      ChangeNotifierProvider(
+        create: (_) => UserProvider(),
+      )
     ], child: MyApp()),
   );
 }

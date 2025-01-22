@@ -20,7 +20,7 @@ class _ProfileTabState extends State<ProfileTab> {
           Container(
               padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 5),
               decoration: const BoxDecoration(
-                color: AppColors.purple,
+                color: AppColors.blue,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(64),
                 ),
@@ -85,7 +85,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.purple, width: 2),
+                      border: Border.all(color: AppColors.blue, width: 2),
                     ),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,13 +93,13 @@ class _ProfileTabState extends State<ProfileTab> {
                         Text(
                           'English',
                           style: TextStyle(
-                              color: AppColors.purple,
+                              color: AppColors.blue,
                               fontWeight: FontWeight.w700,
                               fontSize: 24),
                         ),
                         Icon(
                           Icons.arrow_drop_down_sharp,
-                          color: AppColors.purple,
+                          color: AppColors.blue,
                           size: 34,
                         )
                       ],
@@ -132,7 +132,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.purple, width: 2),
+                      border: Border.all(color: AppColors.blue, width: 2),
                     ),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -140,13 +140,13 @@ class _ProfileTabState extends State<ProfileTab> {
                         Text(
                           'Light',
                           style: TextStyle(
-                              color: AppColors.purple,
+                              color: AppColors.blue,
                               fontWeight: FontWeight.w700,
                               fontSize: 24),
                         ),
                         Icon(
                           Icons.arrow_drop_down_sharp,
-                          color: AppColors.purple,
+                          color: AppColors.blue,
                           size: 34,
                         )
                       ],

@@ -1,11 +1,11 @@
-import 'package:evently_c13_online/core/assets/app_assets.dart';
+import 'package:evently_c13_online/core/providers/user_provider.dart';
 import 'package:evently_c13_online/firebase_helpers/firestore/firestore_helper.dart';
 import 'package:evently_c13_online/model/category_dm.dart';
 import 'package:evently_c13_online/model/event_dm.dart';
-import 'package:evently_c13_online/model/user_dm.dart';
 import 'package:evently_c13_online/ui/shared_widgets/categories_tabs.dart';
 import 'package:evently_c13_online/ui/shared_widgets/custom_button.dart';
 import 'package:evently_c13_online/ui/shared_widgets/custom_text_field.dart';
+import 'package:evently_c13_online/ui/utils/context_extensions.dart';
 import 'package:evently_c13_online/ui/utils/dialog_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
@@ -23,10 +23,11 @@ class _AddEventState extends State<AddEvent> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   DateTime selectedDate = DateTime.now();
-  CategoryDM selectedCategory = CategoryDM.bookingClub;
-
+  CategoryDM selectedCategory = CategoryDM.bookingClubCategory;
+  late UserProvider userProvider;
   @override
   Widget build(BuildContext context) {
+    userProvider = context.userProvider;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add event"),
@@ -36,11 +37,7 @@ class _AddEventState extends State<AddEvent> {
         child: ListView(
           children: [
             buildCategoryImage(),
-            CategoriesTabs(
-                showAllTab: false,
-                onCategoryClick: (category) {
-                  selectedCategory = category;
-                }),
+            buildCategoriesTabs(),
             buildTitleTextField(),
             const SizedBox(
               height: 16,
@@ -68,11 +65,19 @@ class _AddEventState extends State<AddEvent> {
     );
   }
 
+  CategoriesTabs buildCategoriesTabs() {
+    return CategoriesTabs(
+        categories: CategoryDM.categoriesWithoutAllCategory,
+        onCategoryClick: (category) {
+          selectedCategory = category;
+        });
+  }
+
   Container buildCategoryImage() => Container(
       margin: const EdgeInsets.symmetric(vertical: 16),
       child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: Image.asset(AppAssets.sport)));
+          child: Image.asset(selectedCategory.image)));
 
   buildDescriptionField() => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -149,7 +154,7 @@ class _AddEventState extends State<AddEvent> {
         EventDM eventDM = EventDM(
             name: titleController.text,
             date: selectedDate,
-            ownerId: UserDM.currentUser.id,
+            ownerId: userProvider.currentUser.id,
             category: selectedCategory.name,
             description: descriptionController.text);
         showLoading(context);

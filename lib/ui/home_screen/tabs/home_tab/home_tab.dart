@@ -3,9 +3,9 @@ import 'package:evently_c13_online/core/theme/app_colors.dart';
 import 'package:evently_c13_online/firebase_helpers/firestore/firestore_helper.dart';
 import 'package:evently_c13_online/model/category_dm.dart';
 import 'package:evently_c13_online/model/event_dm.dart';
-import 'package:evently_c13_online/model/user_dm.dart';
-import 'package:evently_c13_online/ui/home_screen/tabs/home_tab/widget/event_task.dart';
 import 'package:evently_c13_online/ui/shared_widgets/categories_tabs.dart';
+import 'package:evently_c13_online/ui/shared_widgets/event_task.dart';
+import 'package:evently_c13_online/ui/utils/context_extensions.dart';
 import 'package:flutter/material.dart';
 
 class HomeTab extends StatefulWidget {
@@ -27,9 +27,8 @@ class _HomeTabState extends State<HomeTab> {
           SafeArea(
               child: Container(
             width: double.infinity,
-            height: 174,
             decoration: const BoxDecoration(
-              color: AppColors.purple,
+              color: AppColors.blue,
               borderRadius: BorderRadius.vertical(
                 bottom: Radius.circular(24),
               ),
@@ -39,11 +38,12 @@ class _HomeTabState extends State<HomeTab> {
               child: Column(
                 children: [
                   buildWelcomeText(),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   buildLocationText(),
                   CategoriesTabs(
+                    categories: CategoryDM.categoriesWithAllCategory,
                     onCategoryClick: (category) {
                       selectedCategory = category;
                       setState(() {});
@@ -60,13 +60,13 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   Row buildLocationText() {
-    return Row(
+    return const Row(
       children: [
         ImageIcon(
           AssetImage(AppAssets.mapIcon),
           color: AppColors.white,
         ),
-        const Text('Cairo , Egypt', style: TextStyle(color: AppColors.white)),
+        Text('Cairo , Egypt', style: TextStyle(color: AppColors.white)),
       ],
     );
   }
@@ -77,12 +77,12 @@ class _HomeTabState extends State<HomeTab> {
       children: [
         Column(
           children: [
-            Text(
+            const Text(
               'Welcome Back ✨',
               style: TextStyle(color: AppColors.white),
             ),
-            Text(UserDM.currentUser!.name,
-                style: TextStyle(color: AppColors.white)),
+            Text(context.userProvider.currentUser.name,
+                style: const TextStyle(color: AppColors.white)),
           ],
         ),
         const Spacer(),
@@ -103,7 +103,7 @@ class _HomeTabState extends State<HomeTab> {
           child: const Text(
             'EN',
             style:
-                TextStyle(color: AppColors.purple, fontWeight: FontWeight.bold),
+                TextStyle(color: AppColors.blue, fontWeight: FontWeight.bold),
           ),
         ),
       ],
@@ -112,23 +112,33 @@ class _HomeTabState extends State<HomeTab> {
 
   Expanded buildEventsListView() {
     return Expanded(
-      child: FutureBuilder<List<EventDM>>(
-        future: getEventsByCategory(selectedCategory.name),
+      child: StreamBuilder<List<EventDM>>(
+        stream: getEventsByCategory(selectedCategory.name),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             print(
                 "Error While LOADING EVENTS: ${snapshot.error}: ${snapshot.stackTrace}");
-            return Text("Error");
+            return const Text("Error");
           } else if (snapshot.hasData) {
             var eventsList = snapshot.data ?? [];
-            return ListView.builder(
-              itemBuilder: (context, index) => EventWidget(
-                eventDM: eventsList[index],
-              ),
-              itemCount: eventsList.length,
-            );
+            return eventsList.isEmpty
+                ? const Center(
+                    child: Text(
+                    "Currently There is no available events",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        color: AppColors.blue),
+                  ))
+                : ListView.builder(
+                    itemBuilder: (context, index) => EventWidget(
+                      eventDM: eventsList[index],
+                    ),
+                    itemCount: eventsList.length,
+                  );
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }

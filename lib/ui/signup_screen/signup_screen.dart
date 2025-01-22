@@ -1,6 +1,8 @@
 import 'package:evently_c13_online/core/assets/app_assets.dart';
+import 'package:evently_c13_online/core/providers/user_provider.dart';
 import 'package:evently_c13_online/firebase_helpers/firestore/firestore_helper.dart';
 import 'package:evently_c13_online/model/user_dm.dart';
+import 'package:evently_c13_online/ui/utils/context_extensions.dart';
 import 'package:evently_c13_online/ui/utils/dialog_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,10 +19,12 @@ class SignupScreen extends StatelessWidget {
   var passwordController = TextEditingController();
   var emailController = TextEditingController();
   var nameController = TextEditingController();
+  late UserProvider userProvider;
 
   @override
   Widget build(BuildContext context) {
     appLocalizations = AppLocalizations.of(context)!;
+    userProvider = context.userProvider;
     return Scaffold(
       appBar: AppBar(
         title: Text(appLocalizations.register),
@@ -92,7 +96,8 @@ class SignupScreen extends StatelessWidget {
               name: nameController.text,
               email: emailController.text);
           await createUserInFirestore(newUser);
-          UserDM.currentUser = newUser;
+          userProvider
+              .updateCurrentUser(await getUserFromFirestore(newUser.id));
           hideLoading(context);
         } on FirebaseAuthException catch (e) {
           hideLoading(context);

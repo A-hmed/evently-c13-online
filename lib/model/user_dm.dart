@@ -1,7 +1,6 @@
 
 
 class UserDM {
-  static late UserDM currentUser;
   late String id;
   late String name;
   late String email;
@@ -17,7 +16,8 @@ class UserDM {
     id = json["id"] as String;
     email = json["email"] as String;
     name = json["name"] as String;
-    favoritesEventsIds = json["favoritesEventsIds"] as List<String>?;
+    List<dynamic>? events = json["favoritesEventsIds"] as List<dynamic>?;
+    favoritesEventsIds = events?.map((event) => event.toString()).toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -27,5 +27,9 @@ class UserDM {
       "email": email,
       "favoritesEventsIds": favoritesEventsIds
     };
+  }
+
+  bool isFavoriteEvent(String eventId) {
+    return favoritesEventsIds?.contains(eventId) ?? false;
   }
 }
