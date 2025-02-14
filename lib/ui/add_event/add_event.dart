@@ -1,14 +1,17 @@
 import 'package:evently_c13_online/core/assets/app_assets.dart';
+import 'package:evently_c13_online/core/providers/layout_provider.dart';
 import 'package:evently_c13_online/core/theme/app_colors.dart';
 import 'package:evently_c13_online/firebase_helpers/firestore/firestore_helper.dart';
 import 'package:evently_c13_online/model/category_dm.dart';
 import 'package:evently_c13_online/model/event_dm.dart';
 import 'package:evently_c13_online/model/user_dm.dart';
+import 'package:evently_c13_online/ui/add_event/widgets/pick_location_screen.dart';
 import 'package:evently_c13_online/ui/shared_widgets/categories_tabs.dart';
 import 'package:evently_c13_online/ui/shared_widgets/custom_text_field.dart';
 import 'package:evently_c13_online/ui/utils/dialog_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:provider/provider.dart';
 
 class AddEvent extends StatefulWidget {
   static const routeName = "add_event";
@@ -25,9 +28,13 @@ class _AddEventState extends State<AddEvent> {
   TextEditingController descriptionController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
+late LayoutProvider provider;
+  @override
+
 
   @override
   Widget build(BuildContext context) {
+     provider = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Add event"),
@@ -67,10 +74,13 @@ class _AddEventState extends State<AddEvent> {
                   SizedBox(
                     height: 16,
                   ),
+                  OutlinedButton(onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => PickLocationScreen()));
+                  }, child: Text(provider.userLocation == null ? "Pick Location" : "Location: ${provider.userLocation!.latitude} ${provider.userLocation!.longitude}")),
                 ],
               ),
             )),
-            buildAddEventButton()
+            buildAddEventButton(),
           ],
         ),
       ),
@@ -84,7 +94,10 @@ class _AddEventState extends State<AddEvent> {
           child: Image.asset(AppAssets.sport)));
 
   buildCategoriesTabs() => Container(
-        color: AppColors.blue,
+    decoration: BoxDecoration(
+      color: AppColors.blue,
+      borderRadius: BorderRadius.circular(16),
+    ),
         child: CategoriesTabs(
             categories: CategoryDM.defaultCategories,
             onCategoryClick: (category) {
@@ -136,6 +149,7 @@ class _AddEventState extends State<AddEvent> {
                 setState(() {});
               },
               child: const Text("Choose Date")),
+
         ],
       );
 
@@ -169,7 +183,10 @@ class _AddEventState extends State<AddEvent> {
             date: selectedDate,
             ownerId: UserDM.currentUser.id,
             category: selectedCategory.name,
-            description: descriptionController.text);
+            description: descriptionController.text,
+        lat: provider.userLocation!.latitude,
+        lng: provider.userLocation!.longitude
+        );
         showLoading(context);
         await addEvent(newEvent);
         hideLoading(context);

@@ -1,3 +1,4 @@
+import 'package:evently_c13_online/core/providers/layout_provider.dart';
 import 'package:evently_c13_online/core/providers/locale_provider.dart';
 import 'package:evently_c13_online/core/providers/theme_provider.dart';
 import 'package:evently_c13_online/core/theme/app_theme.dart';
@@ -13,14 +14,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-      // options: DefaultFirebaseOptions.currentPlatform, Automatic flutter installation
-      options: FirebaseOptions(
-    apiKey: "AIzaSyBAIsKrLn2Lqs-ctJbCVvttX1T-k4T2uuk",
-    appId: "1:650546700749:android:e17916f94acb0d6571e484",
-    messagingSenderId: "",
-    projectId: "evently-online",
-  ));
+  await Firebase.initializeApp();
   runApp(
     MultiProvider(providers: [
       ChangeNotifierProvider(
@@ -28,6 +22,9 @@ void main() async {
       ),
       ChangeNotifierProvider(
         create: (context) => LocaleProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => LayoutProvider(),
       ),
     ], child: MyApp()),
   );

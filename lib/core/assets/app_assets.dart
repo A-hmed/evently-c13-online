@@ -14,6 +14,8 @@ class AppAssets{
   static const String loveActive = 'assets/images/love_active.png';
   static const String profileActive = 'assets/images/profile_active.png';
   static const String sport = 'assets/images/sport.png';
+  static const String bookClub = 'assets/images/book_club.png';
+  static const String birthday = 'assets/images/birthday.png';
   static const String route = 'assets/images/route.png';
 
 

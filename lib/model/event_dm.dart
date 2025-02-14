@@ -4,8 +4,8 @@ class EventDM {
   late String name;
   late DateTime date;
   late String ownerId;
-  late int? lat;
-  late int? lng;
+  late double? lat;
+  late double? lng;
   late String category;
   late String description;
 
