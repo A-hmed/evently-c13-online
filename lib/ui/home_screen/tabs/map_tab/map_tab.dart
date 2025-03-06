@@ -1,4 +1,4 @@
-import 'package:evently_c13_online/core/providers/layout_provider.dart';
+import 'package:evently_c13_online/core/providers/location_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +11,7 @@ class MapTab extends StatefulWidget {
 }
 
 class _MapTabState extends State<MapTab> {
-  late LayoutProvider provider;
+  late LocationProvider provider;
 
   @override
   void initState() {
@@ -23,32 +23,28 @@ class _MapTabState extends State<MapTab> {
   @override
   Widget build(BuildContext context) {
     provider = Provider.of(context);
+    return Consumer<LocationProvider>(
+      builder: (context, value, child) {
+        return Scaffold(
+          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+          floatingActionButton: FloatingActionButton(onPressed: (){
+            provider.setLocationListener();
+          },child: const Icon(Icons.gps_fixed_outlined),),
+          body: Column(
+            children: [
+              Expanded(
+                  child: GoogleMap(
+                    markers: provider.markers,
 
-    return Consumer<LayoutProvider>(builder: (context, value, child) {
-      return Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-        floatingActionButton: FloatingActionButton(
-
-          onPressed: (){
-          provider.setLocationListener();
-
-
-        },child: Icon(Icons.gps_fixed_outlined),),
-        body: Column(
-          children: [
-            Expanded(
-                child: GoogleMap(
-              initialCameraPosition: provider.cameraPosition,
-              mapType: MapType.normal,
-              markers: provider.markers,
-              onMapCreated: (controller) {
-                provider.mapController = controller;
-        
-              },
-            ))
-          ],
-        ),
-      );
-    });
+                initialCameraPosition: provider.cameraPosition,
+                onMapCreated: (controller) {
+                  provider.mapController = controller;
+                },
+              ))
+            ],
+          ),
+        );
+      },
+    );
   }
 }

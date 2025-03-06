@@ -1,11 +1,11 @@
 import 'package:evently_c13_online/core/assets/app_assets.dart';
-import 'package:evently_c13_online/core/providers/layout_provider.dart';
+import 'package:evently_c13_online/core/providers/location_provider.dart';
 import 'package:evently_c13_online/core/theme/app_colors.dart';
 import 'package:evently_c13_online/firebase_helpers/firestore/firestore_helper.dart';
 import 'package:evently_c13_online/model/category_dm.dart';
 import 'package:evently_c13_online/model/event_dm.dart';
 import 'package:evently_c13_online/model/user_dm.dart';
-import 'package:evently_c13_online/ui/add_event/widgets/pick_location_screen.dart';
+import 'package:evently_c13_online/ui/add_event/widgets/pick_map_screen.dart';
 import 'package:evently_c13_online/ui/shared_widgets/categories_tabs.dart';
 import 'package:evently_c13_online/ui/shared_widgets/custom_text_field.dart';
 import 'package:evently_c13_online/ui/utils/dialog_utils.dart';
@@ -28,10 +28,9 @@ class _AddEventState extends State<AddEvent> {
   TextEditingController descriptionController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
-late LayoutProvider provider;
+  late LocationProvider provider;
+
   @override
-
-
   @override
   Widget build(BuildContext context) {
      provider = Provider.of(context);
@@ -74,13 +73,36 @@ late LayoutProvider provider;
                   SizedBox(
                     height: 16,
                   ),
-                  OutlinedButton(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PickLocationScreen()));
-                  }, child: Text(provider.userLocation == null ? "Pick Location" : "Location: ${provider.userLocation!.latitude} ${provider.userLocation!.longitude}")),
+                  OutlinedButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => PickMapScreen(),));
+
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 16),
+                        child: Row(
+                          children: [
+                            Container(
+
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: AppColors.blue),
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: AppColors.blue
+                                ),
+                                padding:const EdgeInsets.all(12) ,
+                                child: Icon(Icons.gps_fixed_outlined,size: 24,color: AppColors.white,)),
+                            SizedBox(width: 14,),
+                            Expanded(child: Text(provider.userLocation == null ?'Pick Location': '${provider.userLocation!.latitude}, ${provider.userLocation!.longitude}',style: TextStyle(color: AppColors.blue),)),
+                            Spacer(),
+                            Icon(Icons.arrow_forward_ios),
+                          ],
+                        ),
+                      ))
                 ],
               ),
             )),
             buildAddEventButton(),
+
           ],
         ),
       ),
@@ -94,10 +116,10 @@ late LayoutProvider provider;
           child: Image.asset(AppAssets.sport)));
 
   buildCategoriesTabs() => Container(
-    decoration: BoxDecoration(
-      color: AppColors.blue,
-      borderRadius: BorderRadius.circular(16),
-    ),
+        decoration: BoxDecoration(
+          color: AppColors.blue,
+          borderRadius: BorderRadius.circular(16),
+        ),
         child: CategoriesTabs(
             categories: CategoryDM.defaultCategories,
             onCategoryClick: (category) {
@@ -149,7 +171,6 @@ late LayoutProvider provider;
                 setState(() {});
               },
               child: const Text("Choose Date")),
-
         ],
       );
 
@@ -179,13 +200,13 @@ late LayoutProvider provider;
         selectedDate = DateTime(selectedDate.year, selectedDate.month,
             selectedDate.day, selectedTime.hour, selectedTime.minute);
         EventDM newEvent = EventDM(
-            name: titleController.text,
-            date: selectedDate,
-            ownerId: UserDM.currentUser.id,
-            category: selectedCategory.name,
-            description: descriptionController.text,
-        lat: provider.userLocation!.latitude,
-        lng: provider.userLocation!.longitude
+          name: titleController.text,
+          date: selectedDate,
+          ownerId: UserDM.currentUser.id,
+          category: selectedCategory.name,
+          description: descriptionController.text,
+          lat: provider.userLocation!.latitude,
+          lng: provider.userLocation!.longitude,
         );
         showLoading(context);
         await addEvent(newEvent);
